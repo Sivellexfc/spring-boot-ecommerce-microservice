@@ -1,0 +1,66 @@
+server:
+  port: 8889
+  error:
+    include-message: always
+
+spring:
+  cloud:
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowed-headers: "*"
+            allowedMethods:
+              - GET
+              - POST
+      routes:
+        - id: store-service
+          uri: lb://STORE-SERVICE
+          predicates:
+            - Path=/api/store/**
+          filters:
+            - AuthenticationFilter
+
+        - id: customer-service
+          uri: lb://CUSTOMER-SERVICE
+          predicates:
+            - Path=/api/customer/**
+          filters:
+            - AuthenticationFilter
+
+        - id: order-service
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/api/order/**
+          filters:
+            - AuthenticationFilter
+
+        - id: product-service
+          uri: lb://PRODUCT-SERVICE
+          predicates:
+            - Path=/api/product/**
+          filters:
+            - AuthenticationFilter
+
+        - id: authentication-service
+          uri: lb://AUTHENTICATION-SERVICE
+          predicates:
+            - Path=/auth/**
+
+      discovery:
+        locator:
+          enabled: true
+
+  application:
+    name: gateway-service
+  main:
+    web-application-type: reactive
+    allow-circular-references: true
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: true

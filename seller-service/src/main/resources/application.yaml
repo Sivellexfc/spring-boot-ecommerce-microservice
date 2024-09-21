@@ -1,0 +1,25 @@
+server:
+  port: 8282
+
+spring:
+  application:
+    name: STORE-SERVICE
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: sellerDatabase
+      username: root
+      password: root
+      authentication-database: admin
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: true
+
+logging:
+  level:
+    feign: DEBUG
+    com.spring.microservice.ecommercial: DEBUG
