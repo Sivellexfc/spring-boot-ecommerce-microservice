@@ -14,6 +14,8 @@ spring:
             allowedMethods:
               - GET
               - POST
+              - PATCH
+              - DELETE
       routes:
         - id: store-service
           uri: lb://STORE-SERVICE

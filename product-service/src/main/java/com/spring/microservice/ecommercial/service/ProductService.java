@@ -137,9 +137,55 @@ public class ProductService {
         productRepository.deleteById(productId);
     }
 
-    public ResponseEntity<ResponseProductDto> updateProduct(RequestProductDto requestProductDto, String accountId, String productId) throws AccountNotFoundException {
-        return null;
+    public ResponseEntity<ResponseProductDto> updateProduct(HttpServletRequest request,
+                                                            RequestProductDto requestProductDto,
+
+                                                            byte[] productImage,
+                                                            long productId) throws AccountNotFoundException {
+
+        Optional<Product> product = productRepository.findById(productId);
+
+        int userId = extractUserIDFromHttpRequest(request);
+
+        ResponseEntity<String> storeIdResponse = authenticationServiceClient.getUserStoreId(userId,
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+
+        if (!storeIdResponse.getStatusCode().is2xxSuccessful() || storeIdResponse.getBody() == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        }
+
+        String storeId = storeIdResponse.getBody();
+
+        if (product.isPresent()) {
+            Product existingProduct = product.get();
+
+            if (storeId.equals(existingProduct.getStoreId())) {
+
+                existingProduct.setProductName(requestProductDto.getProductName());
+                existingProduct.setProductDescription(requestProductDto.getProductDescription());
+                existingProduct.setStock(requestProductDto.getStock());
+                existingProduct.setPrice(requestProductDto.getPrice());
+                existingProduct.setBrand(requestProductDto.getBrand());
+                existingProduct.setCategoryName(requestProductDto.getCategoryName());
+
+                if (productImage != null && productImage.length > 0) {
+                    existingProduct.setImageUrl(productImage);
+                }
+
+                Product updatedProduct = productRepository.save(existingProduct);
+
+                ResponseProductDto responseDto = ProductWrapper.toResponseProductDto(updatedProduct);
+                return ResponseEntity.ok(responseDto);
+
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+            }
+
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
+
 
     public int extractUserIDFromHttpRequest(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");

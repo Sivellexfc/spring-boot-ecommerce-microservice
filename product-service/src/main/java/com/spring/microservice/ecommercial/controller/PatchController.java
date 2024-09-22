@@ -12,6 +12,7 @@ import lombok.SneakyThrows;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/product")
@@ -33,10 +34,25 @@ public class PatchController {
 
     @SneakyThrows
     @PatchMapping("/update")
-    public ResponseEntity<ResponseProductDto> editProduct(@RequestParam String productId,
-                                                          @RequestBody RequestProductDto requestProductDto,
-                                                          @RequestParam String accountId){
-        return productService.updateProduct(requestProductDto,accountId,productId);
+    public ResponseEntity<ResponseProductDto> editProduct(@RequestParam("file") MultipartFile productImage,
+                                                          @RequestParam("productName") String productName,
+                                                          @RequestParam("productDescription") String productDescription,
+                                                          @RequestParam("categoryName") String categoryName,
+                                                          @RequestParam("brand") String brand,
+                                                          @RequestParam("price") double price,
+                                                          @RequestParam("stock") int stock,
+                                                          @RequestParam("productId") long productId,
+                                                          HttpServletRequest request
+                                                          ){
+        System.out.println("product name " + productName);
+        RequestProductDto requestProductDto = new RequestProductDto();
+        requestProductDto.setProductName(productName);
+        requestProductDto.setProductDescription(productDescription);
+        requestProductDto.setCategoryName(categoryName);
+        requestProductDto.setBrand(brand);
+        requestProductDto.setPrice(price);
+        requestProductDto.setStock(stock);
+        return productService.updateProduct(request,requestProductDto,productImage.getBytes(),productId);
     }
 
     @PatchMapping("/update/test")

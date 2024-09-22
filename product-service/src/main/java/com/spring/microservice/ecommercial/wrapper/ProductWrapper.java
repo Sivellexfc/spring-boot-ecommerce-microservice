@@ -5,6 +5,8 @@ import com.spring.microservice.ecommercial.dto.ResponseProductDto;
 import com.spring.microservice.ecommercial.dto.RequestProductDto;
 import com.spring.microservice.ecommercial.entity.Product;
 
+import java.util.Base64;
+
 public class ProductWrapper {
 
 
@@ -37,6 +39,25 @@ public class ProductWrapper {
         product.setStoreId(requestProductDto.getSellerId());
         product.setStock(requestProductDto.getStock());
         return product;
+    }
+
+    public static ResponseProductDto toResponseProductDto(Product product) {
+        ResponseProductDto responseProductDto = new ResponseProductDto();
+
+        responseProductDto.setProductName(product.getProductName());
+        responseProductDto.setProductDescription(product.getProductDescription());
+        responseProductDto.setCategoryId(product.getCategoryId());
+        responseProductDto.setDiscount(product.getDiscount());
+        responseProductDto.setHasDiscount(product.isHasDiscount());
+        responseProductDto.setPrice(product.getPrice());
+        responseProductDto.setBrand(product.getBrand());
+
+        if (product.getImageUrl() != null) {
+            String base64Image = Base64.getEncoder().encodeToString(product.getImageUrl());
+            responseProductDto.setImageUrl("data:image/jpeg;base64," + base64Image);
+        }
+        responseProductDto.setStock(product.getStock());
+        return responseProductDto;
     }
 
 }

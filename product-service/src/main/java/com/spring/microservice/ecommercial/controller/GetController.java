@@ -31,13 +31,15 @@ public class GetController {
         return ResponseEntity.ok(productService.getAll());
     }
 
+
+
     @GetMapping("/get/seller/{sellerId}")
     public ResponseEntity<List<ResponseProductDto>> getProductBySeller(@PathVariable String sellerId){
         System.out.println("getProductBySeller method gövdesi");
         return ResponseEntity.ok(productService.getProductsBySellerId(sellerId));
     }
 
-    @GetMapping("/get/{productId}")
+    @GetMapping("/get/id/{productId}")
     public ResponseEntity<Product> getProductById(@PathVariable long productId){
         if(productService.getProductByProductId(productId).isPresent())
             return ResponseEntity.ok(productService.getProductByProductId(productId).get());
