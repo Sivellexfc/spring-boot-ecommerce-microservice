@@ -51,7 +51,6 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                         String[] rolesArray = response.getBody();
                         assert rolesArray != null;
                         List<String> rolesList = Arrays.asList(rolesArray);
-                        System.out.println("Roles list" + rolesList);
 
                         if (rolesList.contains("SELLER")) {
                             if (!exchange.getRequest().getURI().getPath().contains("store") &&
@@ -63,7 +62,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                             }
                         }
                         if (rolesList.contains("CUSTOMER")) {
-                            if (!exchange.getRequest().getURI().getPath().contains("customer")) {
+                            if (!exchange.getRequest().getURI().getPath().contains("product/add/comment") &&
+                                    !exchange.getRequest().getURI().getPath().contains("order")) {
                                 throw new RuntimeException("unauthorized access as CUSTOMER");
                             }
                         }

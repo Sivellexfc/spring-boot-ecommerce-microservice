@@ -27,7 +27,7 @@ public class ProductWrapper {
         return product;
     }
 
-    public static Product toEntity(RequestProductDto requestProductDto,long productId) {
+    public static Product toEntity(RequestProductDto requestProductDto, long productId) {
         Product product = new Product();
         product.setId(productId);
 
@@ -51,10 +51,12 @@ public class ProductWrapper {
         responseProductDto.setHasDiscount(product.isHasDiscount());
         responseProductDto.setPrice(product.getPrice());
         responseProductDto.setBrand(product.getBrand());
+        System.out.println(product.getComments());
+        responseProductDto.setComments(product.getComments());
 
-        if (product.getImageUrl() != null) {
-            String base64Image = Base64.getEncoder().encodeToString(product.getImageUrl());
-            responseProductDto.setImageUrl("data:image/jpeg;base64," + base64Image);
+        if (product.getImage() != null) {
+            String base64Image = Base64.getEncoder().encodeToString(product.getImage());
+            responseProductDto.setImage("data:image/jpeg;base64," + base64Image);
         }
         responseProductDto.setStock(product.getStock());
         return responseProductDto;

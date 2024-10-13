@@ -19,6 +19,11 @@ public class RouteValidator {
             "/api/product/get/**/**",
             "/api/product/get/",
             "/api/product/get",
+            "/api/product/comment",
+            "/api/product/comment/**",
+            "/api/order/get",
+            "/api/order/get/**",
+            "/api/order/get/**/**",
             "/eureka"
     );
 

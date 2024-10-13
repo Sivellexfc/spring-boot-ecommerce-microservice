@@ -40,7 +40,7 @@ public class ProductService {
     }
 
     @Transactional
-    public ResponseEntity<Product> createProduct(RequestProductDto requestProductDto, HttpServletRequest request,byte[] productImage) {
+    public ResponseEntity<Product> createProduct(RequestProductDto requestProductDto, HttpServletRequest request, byte[] productImage) {
 
         int userId = extractUserIDFromHttpRequest(request);
         System.out.println("userID : "+userId);
@@ -48,7 +48,7 @@ public class ProductService {
 
         try {
             Product product = ProductWrapper.toEntity(requestProductDto);
-            product.setImageUrl(productImage);
+            product.setImage(productImage);
             Product savedProduct = productRepository.save(product);
             try {
                 ResponseEntity<String> storeId = authenticationServiceClient.getUserStoreId(userId,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
@@ -76,10 +76,11 @@ public class ProductService {
             dto.setStock(product.getStock());
             dto.setPrice(product.getPrice());
             dto.setBrand(product.getBrand());
+            dto.setComments(product.getComments());
 
-            if (product.getImageUrl() != null) {
-                String base64Image = Base64.getEncoder().encodeToString(product.getImageUrl());
-                dto.setImageUrl("data:image/jpeg;base64," + base64Image);
+            if (product.getImage() != null) {
+                String base64Image = Base64.getEncoder().encodeToString(product.getImage());
+                dto.setImage("data:image/jpeg;base64," + base64Image);
             }
             dto.setCategoryName(product.getCategoryName());
             dto.setBrand(product.getBrand());
@@ -110,9 +111,9 @@ public class ProductService {
             dto.setPrice(product.getPrice());
             dto.setBrand(product.getBrand());
 
-            if (product.getImageUrl() != null) {
-                String base64Image = Base64.getEncoder().encodeToString(product.getImageUrl());
-                dto.setImageUrl("data:image/jpeg;base64," + base64Image);
+            if (product.getImage() != null) {
+                String base64Image = Base64.getEncoder().encodeToString(product.getImage());
+                dto.setImage("data:image/jpeg;base64," + base64Image);
             }
             dto.setCategoryName(product.getCategoryName());
             dto.setBrand(product.getBrand());
@@ -137,9 +138,9 @@ public class ProductService {
         productRepository.deleteById(productId);
     }
 
+    @Transactional
     public ResponseEntity<ResponseProductDto> updateProduct(HttpServletRequest request,
                                                             RequestProductDto requestProductDto,
-
                                                             byte[] productImage,
                                                             long productId) throws AccountNotFoundException {
 
@@ -169,7 +170,7 @@ public class ProductService {
                 existingProduct.setCategoryName(requestProductDto.getCategoryName());
 
                 if (productImage != null && productImage.length > 0) {
-                    existingProduct.setImageUrl(productImage);
+                    existingProduct.setImage(productImage);
                 }
 
                 Product updatedProduct = productRepository.save(existingProduct);
@@ -186,7 +187,6 @@ public class ProductService {
         }
     }
 
-
     public int extractUserIDFromHttpRequest(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
 
@@ -198,7 +198,6 @@ public class ProductService {
             throw new IllegalArgumentException("Authorization header is missing or invalid");
         }
     }
-
 
     public ResponseEntity deleteAll() {
         productRepository.deleteAll();

@@ -24,7 +24,8 @@
 		<module>seller-service</module>
 		<module>gateway-service</module>
 		<module>customer-service</module>
-	</modules>
+        <module>order-service</module>
+    </modules>
 
 	<properties>
 		<java.version>17</java.version>

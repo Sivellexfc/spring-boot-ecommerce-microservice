@@ -3,7 +3,9 @@ package com.spring.microservice.ecommercial.controller;
 
 import com.spring.microservice.ecommercial.client.AccountServiceClient;
 import com.spring.microservice.ecommercial.dto.ResponseProductDto;
+import com.spring.microservice.ecommercial.entity.Comment;
 import com.spring.microservice.ecommercial.entity.Product;
+import com.spring.microservice.ecommercial.service.CommentService;
 import com.spring.microservice.ecommercial.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +21,12 @@ import java.util.List;
 public class GetController {
 
     private final ProductService productService;
+    private final CommentService commentService;
     private final AccountServiceClient accountServiceClient;
 
-    public GetController(ProductService productService, AccountServiceClient accountServiceClient) {
+    public GetController(ProductService productService, CommentService commentService, AccountServiceClient accountServiceClient) {
         this.productService = productService;
+        this.commentService = commentService;
         this.accountServiceClient = accountServiceClient;
     }
 
@@ -30,8 +34,6 @@ public class GetController {
     public ResponseEntity<List<ResponseProductDto>> getAllProduct(){
         return ResponseEntity.ok(productService.getAll());
     }
-
-
 
     @GetMapping("/get/seller/{sellerId}")
     public ResponseEntity<List<ResponseProductDto>> getProductBySeller(@PathVariable String sellerId){
@@ -44,6 +46,12 @@ public class GetController {
         if(productService.getProductByProductId(productId).isPresent())
             return ResponseEntity.ok(productService.getProductByProductId(productId).get());
         else return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
+
+    @GetMapping("/comment/{productId}")
+    public ResponseEntity<List<Comment>> getCommentsByProductId(@PathVariable Long productId) {
+        List<Comment> comments = commentService.getCommentsByProductId(productId);
+        return ResponseEntity.ok(comments);
     }
 
     @GetMapping("/get/test")

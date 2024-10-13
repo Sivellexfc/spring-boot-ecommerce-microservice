@@ -6,16 +6,21 @@ server:
 spring:
   cloud:
     gateway:
+
       globalcors:
+        add-to-simple-url-handler-mapping: true
         corsConfigurations:
           '[/**]':
-            allowedOrigins: "*"
+            allowedOrigins: "http://localhost:3000"
             allowed-headers: "*"
             allowedMethods:
               - GET
               - POST
               - PATCH
               - DELETE
+              - OPTIONS
+              - PUT
+            allowCredentials: true
       routes:
         - id: store-service
           uri: lb://STORE-SERVICE
